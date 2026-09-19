@@ -1,7 +1,35 @@
-* Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
-* Käyttäjä pystyy lisäämään sovellukseen resepteja. Lisäksi käyttäjä pystyy muokkaamaan ja poistamaan lisäämiään resepteja.
-* Käyttäjä näkee sovellukseen lisätyt reseptit. Käyttäjä näkee sekä itse lisäämänsä että muiden käyttäjien lisäämät reseptit.
-* Käyttäjä pystyy etsimään resepteja hakusanalla tai muulla perusteella. Käyttäjä pystyy hakemaan sekä itse lisäämiään että muiden käyttäjien lisäämiä resepteja.
-* Sovelluksessa on käyttäjäsivut, jotka näyttävät jokaisesta käyttäjästä tilastoja ja käyttäjän lisäämät reseptit.
-* Resepteille on valittavissa useampia luokitteluja. Käyttäjä voi valita jokaisen luokittelun kohdalla yhden tai useamman vaihtoehdon. ESIM: (Minkalainen leivos, Erityisruokavalio
-* Sovelluksessa on pääasiallisen tietokohteiden lisäksi toissijainen tietokohde, joka täydentää pääasiallista tietokohdetta. Käyttäjä pystyy lisäämään toissijaisia tietokohteita omiin ja muiden käyttäjien tietokohteisiin liittyen.
+Bakelist
+
+Bakelist is application for baking recipes. You can browse recipes added by other people or you can add and edit your own recipes. Users can create account, log in, add, edit and delete their own recipes. You browse recipes from alphabetical system 
+
+Requirements:
+Python 3.10
+Flask
+
+Running application:
+1. Clone the repository
+  In terminal git https://github.com/HeadInStasis/leivontaohjekirjasto.git
+  cd leivontaohjekirjasto
+
+2. Create virtual environment
+   python3 -m venv venv
+
+3.Activate the environment
+   For macOS/Linux:
+   source venv/bin/activate
+
+   For Windows:
+   venv\Scripts\activate
+
+4. Install FLask
+   pip install flask
+
+5. Create SQL database
+   sqlite3 database.db < database.sql
+
+6. Start the application
+   flask run
+
+
+Features:
+-
