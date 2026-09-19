@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Account</title>
+</head>
+
+<body>
+    <h1>My Account</h1>
+    <p>Username: {{ session.username}}</p>
+
+    <h2>My Recipes</h2>
+
+            <p>
+	    	<a href="/my-recipes">My Recipes</a>
+            </p>
+
+    <form method="post" action="/delete-account">
+        <button type="submit">Delete account</button>
+    </form>
+   
+    <p>
+        <a href="/">Back to Bakelist</a>
+    </p>
+
+</body>
+
+</html>
+

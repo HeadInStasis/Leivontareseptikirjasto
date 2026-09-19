@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bakelist</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <h1>Bakelist</h1>
+  
+    {% if session.username %}
+        <p>{{ session.username }}</p>
+	<a href="/account">My Account</>
+	<a href="/add-recipe">Add Recipe</a>
+        <a href="/logout">Logout</a>
+    
+    {% else %}
+       <div class="login-box">
+          {% if error %}
+              <p>{{ error }}</p>
+          {% endif %}
+
+          <form method="post" action="/login">
+              <input type="text" name="username" placeholder="Username" required>
+              <input type="password" name="password" placeholder="Password" required>
+              <button type="submit">Login</button>
+              <a href="/register">Register</a>
+          </form>
+        </div>
+    {% endif %}    
+
+    
+    <h2>Recipes</h2>
+
+    <div class="alphabet">
+            <a href="/recipes/A">A</a>
+	    <a href="/recipes/B">B</a>
+    	    <a href="/recipes/C">C</a>
+    	    <a href="/recipes/D">D</a>
+            <a href="/recipes/E">E</a>
+            <a href="/recipes/F">F</a>
+            <a href="/recipes/G">G</a>
+            <a href="/recipes/H">H</a>
+            <a href="/recipes/I">I</a>
+    	    <a href="/recipes/J">J</a>
+    	    <a href="/recipes/K">K</a>
+    	    <a href="/recipes/L">L</a>
+    	    <a href="/recipes/M">M</a>
+    	    <a href="/recipes/N">N</a>
+    	    <a href="/recipes/O">O</a>
+    	    <a href="/recipes/P">P</a>
+    	    <a href="/recipes/Q">Q</a>
+    	    <a href="/recipes/R">R</a>
+    	    <a href="/recipes/S">S</a>
+    	    <a href="/recipes/T">T</a>
+    	    <a href="/recipes/U">U</a>
+    	    <a href="/recipes/V">V</a>
+    	    <a href="/recipes/W">W</a>
+    	    <a href="/recipes/X">X</a>
+    	    <a href="/recipes/Y">Y</a>
+    	    <a href="/recipes/Z">Z</a>
+	</div>
+   
+
+
+</body>
+
+</html>

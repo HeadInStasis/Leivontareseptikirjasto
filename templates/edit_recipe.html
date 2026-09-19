@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Recipe</title>
+</head>
+
+<body>
+
+    <h1>Edit Recipe</h1>
+    <form method="post" action="/edit-recipe/{{ recipe.id }}">
+	<p>
+            Recipe name:<br>
+            <input type="text" name="name" value="{{ recipe.name }}" required>
+        </p>
+
+        <p>
+            Ingredients:<br>
+            <textarea name="ingredients" rows="20" required>{{ recipe.ingredients }}</textarea>
+        </p>
+
+        <p>
+            Instructions:<br>
+            <textarea name="instructions" rows="20" required>{{ recipe.instructions }}</textarea>
+        </p>
+
+        <button type="submit">Save changes</button>
+
+    </form>
+
+    <p>
+        <a href="/recipe/{{ recipe.id }}">Cancel</a>
+    </p>
+
+</body>
+
+</html>

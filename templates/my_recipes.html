@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Recipes - Bakelist</title>
+</head>
+
+<body>
+
+    <h1>My Recipes</h1>
+
+    {% for recipe in recipes %}
+        <p>
+            <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
+            <a href="/edit-recipe/{{ recipe.id }}">Edit</a>
+       	    
+	    <form method="post" action="/delete-recipe/{{ recipe.id }}" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+	</p>
+    {% endfor %}
+
+    <p>
+        <a href="/account">Back to My Account</a>
+    </p>
+
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 50px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.login-box {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 220px;
+}
+
+.login-box input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 6px;
+}
+
+.login-box button {
+    margin-right: 5px;
+}
+
+
+.alphabet {
+    display: grid;
+    grid-template-columns: repeat(7, 70px);
+    gap: 40px;
+}
+
+.alphabet a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    text-decoration: none;
+    font-size: 24px
+}
