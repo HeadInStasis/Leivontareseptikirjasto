@@ -9,7 +9,7 @@ Flask
 Running application:
 1. Clone the repository
   In terminal git https://github.com/HeadInStasis/leivontaohjekirjasto.git
-  cd leivontaohjekirjasto
+  and change directory cd leivontaohjekirjasto
 
 2. Create virtual environment
    python3 -m venv venv
