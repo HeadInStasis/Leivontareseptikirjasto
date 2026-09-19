@@ -1,6 +1,5 @@
-Bakelist
 
-Bakelist is application for baking recipes. You can browse recipes added by other people or you can add and edit your own recipes. Users can create account, log in, add, edit and delete their own recipes. You browse recipes from alphabetical system 
+Leivontareseptikirjasto is application for baking recipes. You can browse recipes added by other people or you can add and edit your own recipes. Users can create account, log in, add, edit and delete their own recipes. You browse recipes from alphabetical system 
 
 Requirements:
 Python 3.10
