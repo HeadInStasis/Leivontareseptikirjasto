@@ -4,30 +4,40 @@ Bakelist is application for baking recipes. You can browse recipes added by othe
 
 Requirements:
 Python 3.10
+
 Flask
 
 Running application:
 1. Clone the repository
-  In terminal git https://github.com/HeadInStasis/leivontaohjekirjasto.git
-  and change directory cd leivontaohjekirjasto
+   
+  In terminal git clone https://github.com/HeadInStasis/leivontaohjekirjasto.git
+  
+   cd leivontaohjekirjasto
 
 2. Create virtual environment
+
    python3 -m venv venv
 
 3.Activate the environment
+   
    For macOS/Linux:
+   
    source venv/bin/activate
 
    For Windows:
+   
    venv\Scripts\activate
 
 4. Install FLask
+
    pip install flask
 
-5. Create SQL database
+6. Create SQL database
+
    sqlite3 database.db < database.sql
 
-6. Start the application
+8. Start the application
+
    flask run
 
 
