@@ -1,36 +1,57 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>{{ recipe.name }}</title>
-</head>
+{% block title %}{{ recipe.name }}{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>{{ recipe.name }}</h1>
-    <p>By {{ recipe.username }}</p>
+<h1>{{ recipe.name }}</h1>
 
-    <h2>Ingredients</h2>
-    <p>{{ recipe.ingredients }}</p>
+<p>By {{ recipe.username }}</p>
 
-    <h2>Instructions</h2>
-    <p>{{ recipe.instructions }}</p>
+<h2>Ingredients</h2>
+<p>{{ recipe.ingredients }}</p>
+
+<h2>Instructions</h2>
+<p>{{ recipe.instructions }}</p>
+
+<h2>Categories</h2>
+
+{% if categories %} <ul>
+{% for category in categories %} <li>{{ category.name }}</li>
+{% endfor %} </ul>
+{% else %} <p>No categories.</p>
+{% endif %}
+
+<h2>Comments</h2>
+
+{% if comments %}
+{% for comment in comments %} <div> <p> <strong>{{ comment.username }}</strong>
+— {{ comment.created_at }} </p> <p>{{ comment.content }}</p> </div>
+{% endfor %}
+{% else %} <p>No comments yet.</p>
+{% endif %}
+
+{% if session.username %} <h3>Add information</h3>
+
+```
+<form method="post" action="/add-comment/{{ recipe.id }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
     <p>
-        <a href="/">Back to Bakelist</a>
+        <textarea
+            name="content"
+            rows="4"
+            required
+            placeholder="Share additional information about this recipe"
+        ></textarea>
     </p>
 
-    <h2>Categories</h2>
+    <button type="submit">Add information</button>
+</form>
+```
 
-    {% if categories %}
-        <ul>
-            {% for category in categories %}
-                <li>{{ category.name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No categories.</p>
-    {% endif %}
+{% else %} <p>You must be logged in to add information.</p>
+{% endif %}
 
-</body>
+{% endblock %}
 
-</html>

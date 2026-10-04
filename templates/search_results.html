@@ -1,19 +1,20 @@
 {% extends "layout.html" %}
 
-{% block title %}Bakelist{% endblock %}
+{% block title %}Search results{% endblock %}
 
 {% block content %}
 
-<h1>Recipes</h1>
-
-<h2>Search recipes</h2>
+<h1>Search results</h1>
 
 <form method="get" action="/search">
-    <input type="text" name="query" placeholder="Search recipes">
+    <input
+        type="text"
+        name="query"
+        value="{{ query }}"
+        placeholder="Search recipes"
+    >
     <button type="submit">Search</button>
 </form>
-
-<h2>All recipes</h2>
 
 {% if recipes %}
     <ul>
@@ -27,7 +28,11 @@
         {% endfor %}
     </ul>
 {% else %}
-    <p>No recipes have been added yet.</p>
+    <p>No recipes found.</p>
 {% endif %}
+
+<p>
+    <a href="/">Back to Bakelist</a>
+</p>
 
 {% endblock %}

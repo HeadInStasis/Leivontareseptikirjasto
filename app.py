@@ -32,15 +32,8 @@ def index():
 
 @app.route("/recipe/<int:recipe_id>")
 def recipe(recipe_id):
-    result = db.query(
-        """
-        SELECT recipes.*, users.username
-        FROM recipes
-        JOIN users ON recipes.user_id = users.id
-        WHERE recipes.id = ?
-        """,
-        [recipe_id]
-    )
+    result = db.get_recipe(recipe_id)
+
 
     if not result:
         flash("Recipe not found.")
@@ -48,23 +41,29 @@ def recipe(recipe_id):
 
     recipe = result[0]
 
-    categories = db.query(
-        """
-        SELECT categories.name
-        FROM categories
-        JOIN recipe_categories
-            ON categories.id = recipe_categories.category_id
-        WHERE recipe_categories.recipe_id = ?
-        ORDER BY categories.name
-        """,
-        [recipe_id]
+    categories = db.get_recipe_categories(recipe_id)
+
+
+    comments = db.query(
+    """
+    SELECT comments.content,
+           comments.created_at,
+           users.username
+    FROM comments
+    JOIN users ON comments.user_id = users.id
+    WHERE comments.recipe_id = ?
+    ORDER BY comments.created_at DESC
+    """,
+    [recipe_id]
     )
 
     return render_template(
         "recipe.html",
         recipe=recipe,
-        categories=categories
+        categories=categories,
+        comments=comments
     )
+
 
 
 @app.route("/register")
@@ -115,19 +114,26 @@ def create():
     return redirect("/")
 
 
-
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form["username"]
+    username = request.form["username"].strip()
     password = request.form["password"]
 
-    sql = "SELECT password_hash FROM users WHERE username = ?"
-    result = db.query(sql, [username])
-    
-    if result and check_password_hash(result[0]["password_hash"], password):
+    result = db.query(
+        "SELECT password_hash FROM users WHERE username = ?",
+        [username]
+    )
+
+    if result and check_password_hash(
+        result[0]["password_hash"],
+        password
+    ):
         session["username"] = username
+        flash("Logged in successfully.")
         return redirect("/")
-    return render_template("index.html", error="Wrong username or password")
+
+    flash("Wrong username or password.")
+    return redirect("/")
 
 
 @app.route("/logout")
@@ -142,30 +148,64 @@ def account():
         flash("You must be logged in to view your account.")
         return redirect("/")
 
-    username = session["username"]
+    user = db.query(
+        "SELECT id, username FROM users WHERE username = ?",
+        [session["username"]]
+    )
 
-    sql = """
-        SELECT recipes.*
+    if not user:
+        session.clear()
+        flash("User account was not found.")
+        return redirect("/")
+
+    user_id = user[0]["id"]
+
+    recipes = db.query(
+        """
+        SELECT *
         FROM recipes
-        JOIN users ON recipes.user_id = users.id
-        WHERE users.username = ?
-        ORDER BY recipes.name ASC
-    """
+        WHERE user_id = ?
+        ORDER BY name ASC
+        """,
+        [user_id]
+    )
 
-    recipes = db.query(sql, [username])
+    recipe_count = db.query(
+        """
+        SELECT COUNT(*) AS count
+        FROM recipes
+        WHERE user_id = ?
+        """,
+        [user_id]
+    )[0]["count"]
 
-    return render_template("account.html", recipes=recipes)
+    return render_template(
+        "account.html",
+        recipes=recipes,
+        recipe_count=recipe_count
+    )
+
 
 
 @app.route("/delete-account", methods=["POST"])
 def delete_account():
+    if "username" not in session:
+        flash("You must be logged in to delete your account.")
+        return redirect("/")
+
     username = session["username"]
 
-    sql = "DELETE FROM users WHERE username = ?"
-    db.execute(sql, [username])
+    db.execute(
+        "DELETE FROM users WHERE username = ?",
+        [username]
+    )
 
-    session.pop("username", None)
+    session.clear()
+
+    flash("Account deleted successfully.")
     return redirect("/")
+
+
 
 @app.route("/add-recipe", methods=["GET", "POST"])
 def add_recipe():
@@ -173,9 +213,7 @@ def add_recipe():
         flash("You must be logged in to add a recipe.")
         return redirect("/")
 
-    categories = db.query(
-        "SELECT id, name FROM categories ORDER BY name"
-    )
+    categories = db.get_categories()
 
     if request.method == "GET":
         return render_template(
@@ -244,7 +282,6 @@ def add_recipe():
     return redirect("/recipe/" + str(recipe_id))
 
 
-
 @app.route("/edit-recipe/<int:recipe_id>", methods=["GET", "POST"])
 def edit_recipe(recipe_id):
     if "username" not in session:
@@ -278,8 +315,29 @@ def edit_recipe(recipe_id):
         flash("You do not have permission to edit this recipe.")
         return redirect("/recipe/" + str(recipe_id))
 
+    categories = db.get_categories()
+
     if request.method == "GET":
-        return render_template("edit_recipe.html", recipe=recipe)
+        selected_categories = db.query(
+            """
+            SELECT category_id
+            FROM recipe_categories
+            WHERE recipe_id = ?
+            """,
+            [recipe_id]
+        )
+
+        selected_category_ids = [
+            category["category_id"]
+            for category in selected_categories
+        ]
+
+        return render_template(
+            "edit_recipe.html",
+            recipe=recipe,
+            categories=categories,
+            selected_category_ids=selected_category_ids
+        )
 
     name = request.form["name"].strip()
     ingredients = request.form["ingredients"].strip()
@@ -289,6 +347,8 @@ def edit_recipe(recipe_id):
         flash("All fields are required.")
         return redirect("/edit-recipe/" + str(recipe_id))
 
+    selected_categories = request.form.getlist("categories")
+
     db.execute(
         """
         UPDATE recipes
@@ -297,6 +357,27 @@ def edit_recipe(recipe_id):
         """,
         [name, ingredients, instructions, recipe_id]
     )
+
+    db.execute(
+        "DELETE FROM recipe_categories WHERE recipe_id = ?",
+        [recipe_id]
+    )
+
+    for category_id in selected_categories:
+        category = db.query(
+            "SELECT id FROM categories WHERE id = ?",
+            [category_id]
+        )
+
+        if category:
+            db.execute(
+                """
+                INSERT INTO recipe_categories
+                (recipe_id, category_id)
+                VALUES (?, ?)
+                """,
+                [recipe_id, category_id]
+            )
 
     flash("Recipe updated successfully.")
     return redirect("/recipe/" + str(recipe_id))
@@ -343,19 +424,6 @@ def delete_recipe(recipe_id):
     return redirect("/my-recipes")
 
 
-
-@app.before_request
-def csrf_protection():
-    if "csrf_token" not in session:
-        session["csrf_token"] = secrets.token_hex(32)
-
-    if request.method == "POST":
-        token = request.form.get("csrf_token")
-
-        if not token or token != session["csrf_token"]:
-            return "Invalid CSRF token", 403
-
-
 @app.route("/search")
 def search():
     query = request.args.get("query", "").strip()
@@ -400,3 +468,48 @@ def my_recipes():
     recipes = db.query(sql, [username])
 
     return render_template("my_recipes.html", recipes=recipes)
+
+
+@app.route("/add-comment/<int:recipe_id>", methods=["POST"])
+def add_comment(recipe_id):
+    if "username" not in session:
+        flash("You must be logged in to add a comment.")
+        return redirect("/recipe/" + str(recipe_id))
+
+    content = request.form["content"].strip()
+
+    if not content:
+        flash("Comment cannot be empty.")
+        return redirect("/recipe/" + str(recipe_id))
+
+    user = db.query(
+        "SELECT id FROM users WHERE username = ?",
+        [session["username"]]
+    )
+
+    if not user:
+        session.clear()
+        flash("User account was not found.")
+        return redirect("/")
+
+    recipe = db.query(
+        "SELECT id FROM recipes WHERE id = ?",
+        [recipe_id]
+    )
+
+    if not recipe:
+        flash("Recipe not found.")
+        return redirect("/")
+
+    user_id = user[0]["id"]
+
+    db.execute(
+        """
+        INSERT INTO comments (recipe_id, user_id, content)
+        VALUES (?, ?, ?)
+        """,
+        [recipe_id, user_id, content]
+    )
+
+    flash("Comment added successfully.")
+    return redirect("/recipe/" + str(recipe_id))

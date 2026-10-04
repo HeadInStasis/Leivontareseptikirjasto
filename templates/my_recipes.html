@@ -15,8 +15,9 @@
             <a href="/edit-recipe/{{ recipe.id }}">Edit</a>
        	    
 	    <form method="post" action="/delete-recipe/{{ recipe.id }}" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Delete</button>
+        </form>
 	</p>
     {% endfor %}
 

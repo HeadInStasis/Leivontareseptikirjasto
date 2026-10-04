@@ -1,37 +1,57 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-    <title>Edit Recipe</title>
-</head>
+{% block title %}Edit Recipe{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>Edit Recipe</h1>
-    <form method="post" action="/edit-recipe/{{ recipe.id }}">
-	<p>
-            Recipe name:<br>
-            <input type="text" name="name" value="{{ recipe.name }}" required>
-        </p>
+<h1>Edit Recipe</h1>
 
-        <p>
-            Ingredients:<br>
-            <textarea name="ingredients" rows="20" required>{{ recipe.ingredients }}</textarea>
-        </p>
+<form method="post" action="/edit-recipe/{{ recipe.id }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <p>
-            Instructions:<br>
-            <textarea name="instructions" rows="20" required>{{ recipe.instructions }}</textarea>
-        </p>
+```
+<p>
+    Recipe name:<br>
+    <input type="text" name="name" value="{{ recipe.name }}" required>
+</p>
 
-        <button type="submit">Save changes</button>
+<p>
+    Ingredients:<br>
+    <textarea name="ingredients" rows="20" required>{{ recipe.ingredients }}</textarea>
+</p>
 
-    </form>
+<p>
+    Instructions:<br>
+    <textarea name="instructions" rows="20" required>{{ recipe.instructions }}</textarea>
+</p>
 
-    <p>
-        <a href="/recipe/{{ recipe.id }}">Cancel</a>
-    </p>
+<p>
+    Categories:<br>
 
-</body>
+    {% for category in categories %}
+        <label>
+            <input
+                type="checkbox"
+                name="categories"
+                value="{{ category.id }}"
+                {% if category.id in selected_category_ids %}
+                    checked
+                {% endif %}
+            >
+            {{ category.name }}
+        </label>
+        <br>
+    {% endfor %}
+</p>
 
-</html>
+<button type="submit">Save changes</button>
+```
+
+</form>
+
+<p>
+    <a href="/recipe/{{ recipe.id }}">Cancel</a>
+</p>
+
+{% endblock %}
+

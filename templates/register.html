@@ -1,32 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h1>Create account</h1>
+{% extends "layout.html" %}
 
-    <form action="/create" method="post">
-        <p>
-            Username:<br>
-            <input type="text" name="username" required>
-        </p>
-	
-	<p>
-	Password:<br>
-	<input type="password" name="password1" required>
-	</p>
+{% block title %}Register{% endblock %}
 
-	<p>
-	Password again:<br>
-	<input type="password" name="password2" required>
-	</p>
-	
+{% block content %}
 
-	<input type="submit" value="Register">
-    </form>
+<h1>Create account</h1>
 
-</body>
+<form action="/create" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-</html>
+    <p>
+        Username:<br>
+        <input type="text" name="username" required>
+    </p>
 
+    <p>
+        Password:<br>
+        <input type="password" name="password1" required>
+    </p>
+
+    <p>
+        Password again:<br>
+        <input type="password" name="password2" required>
+    </p>
+
+    <input type="submit" value="Register">
+</form>
+
+{% endblock %}
