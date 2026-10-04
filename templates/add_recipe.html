@@ -9,7 +9,26 @@
     <h1>Add recipe</h1>
     
     <form method="post" action="/add-recipe" enctype="multipart/form-data">
-	<p>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <p>
+        Categories:<br>
+
+        {% for category in categories %}
+            <label>
+                <input
+                    type="checkbox"
+                    name="categories"
+                    value="{{ category.id }}"
+                >
+                {{ category.name }}
+            </label>
+            <br>
+        {% endfor %}
+    </p>
+
+
+    <p>
 	    Recipe name:<br>
 	    <input type="text" name="name" required>
 	</p>
