@@ -19,6 +19,17 @@
         <a href="/">Back to Bakelist</a>
     </p>
 
+    <h2>Categories</h2>
+
+    {% if categories %}
+        <ul>
+            {% for category in categories %}
+                <li>{{ category.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No categories.</p>
+    {% endif %}
 
 </body>
 
