@@ -33,7 +33,7 @@ Running application:
 
 6. Create SQL database
 
-   sqlite3 database.db < database.sql
+   sqlite3 database.db < init.sql
 
 8. Start the application
 
